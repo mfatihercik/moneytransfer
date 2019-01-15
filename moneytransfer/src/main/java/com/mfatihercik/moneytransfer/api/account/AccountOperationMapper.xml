@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mfatihercik.moneytransfer.api.account.AccountOperationMapper">
+
+	<resultMap type="com.mfatihercik.moneytransfer.domain.AccountOperation"
+		autoMapping="true" id="AccountOperationList">
+	</resultMap>
+	<resultMap type="com.mfatihercik.moneytransfer.domain.AccountOperation" autoMapping="true" 
+	id="AccountOperationDetail">
+		<association property="account" column="account_id" select="com.mfatihercik.moneytransfer.api.account.AccountMapper.get"></association>
+		
+	</resultMap>
+	
+
+	<insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into account_operation
+		(account_id,transaction_id,amount,type,description,created_date) values
+		(#{account.accountId},#{transactionId},#{amount},#{type},#{description}, sysdate)
+	</insert>
+
+	<select id="get" resultType="com.mfatihercik.moneytransfer.domain.Account"
+		resultMap="AccountOperationDetail">
+		select * from account_operation a where a.id=#{id}
+	</select>
+	
+
+	<select id="getAccountOperations" resultType="list" resultMap="AccountOperationList">
+		select * from account_operation where account_id=#{accountId}
+
+	</select>
+
+</mapper>

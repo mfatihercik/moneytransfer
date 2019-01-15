@@ -1,0 +1,188 @@
+databaseChangeLog:
+  - preConditions: 
+     - dbms: 
+        type: h2
+#     - runningAs:
+#         username: sa   
+
+  - changeSet:
+      id: 1
+      author: fatih.ercik
+      changes:
+        - createTable:
+            tableName: user
+            columns: 
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+              - column:
+                  name: created_date
+                  type: DATE
+              - column:
+                  name: modified_date
+                  type: DATE
+              - column:
+                  name: created_by
+                  type: int                  
+              - column:
+                  name: modifiedBy
+                  type: int 
+        - createTable:
+            tableName: account
+            
+            columns:
+              - column:
+                  name: account_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: balance
+                  type: decimal(16,2)
+                  constraints:                    
+                    nullable: false       
+              - column: 
+                  name: owner
+                  type: int
+                  constraints:                    
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(3)  
+                  constraints:                    
+                    nullable: false      
+              - column:
+                  name: status
+                  type: varchar(10)
+                  constraints:                    
+                    nullable: false        
+              - column:
+                  name: created_date
+                  type: DATE
+                  constraints:                    
+                    nullable: false
+              - column:
+                  name: modified_date
+                  type: DATE
+              - column:
+                  name: created_by
+                  type: int                  
+              - column: 
+                  name: modifiedBy
+                  type: int 
+        - createTable:
+            tableName: account_operation
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: int
+                  constraints:                    
+                    nullable: false                  
+              - column: 
+                  name: transaction_id
+                  type: varchar(50)
+                  constraints:                    
+                    nullable: false                     
+              - column: 
+                  name: amount
+                  type: decimal(16,2)
+                  constraints:                    
+                    nullable: false        
+              - column:
+                  name: type
+                  type: varchar(10)
+                  constraints:                    
+                    nullable: false        
+              - column:
+                  name: description
+                  type: varchar(255)        
+              - column:
+                  name: created_date
+                  type: DATE
+              - column:
+                  name: modified_date
+                  type: DATE
+              - column:
+                  name: created_by
+                  type: int                  
+              - column:
+                  name: modifiedBy
+                  type: int                                  
+              
+  - changeSet: 
+      id: init_user
+      author: fatih.ercik
+      changes:
+      - sql:
+          comment: insert initial users
+          dbms: h2, 
+          endDelimiter: \nGO
+          splitStatements: true
+          sql: >
+                insert into user (id,created_date,name) values(1,sysdate,'mfatihercik');
+                insert into user (id,created_date,name) values(2,sysdate,'fatih');
+                insert into user (id,created_date,name) values(3,sysdate,'foo');
+                insert into user (id,created_date,name) values(4,sysdate,'mfe');
+                insert into user (id,created_date,name) values(5,sysdate,'mehmet');
+                insert into user (id,created_date,name) values(6,sysdate,'istanbul');
+                
+                insert into account (balance,owner,currency,status, created_date) values(100,1,'TRY','ACTIVE',sysdate);
+                insert into account (balance,owner,currency,status, created_date) values(100,1,'USD','ACTIVE',sysdate);
+                insert into account (balance,owner,currency,status, created_date) values(100,2,'TRY','ACTIVE',sysdate);
+                insert into account (balance,owner,currency,status, created_date) values(100,2,'USD','ACTIVE',sysdate);
+                insert into account (balance,owner,currency,status, created_date) values(100,3,'TRY','ACTIVE',sysdate);
+                insert into account (balance,owner,currency,status, created_date) values(100,3,'USD','ACTIVE',sysdate);
+                insert into account (balance,owner,currency,status, created_date) values(100,4,'TRY','ACTIVE',sysdate);
+                insert into account (balance,owner,currency,status, created_date) values(100,5,'USD','ACTIVE',sysdate);
+                
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(1,1,'1',100,'DEBIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(2,2,'1',100,'CREDIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(3,1,'2',130,'DEBIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(4,3,'2',130,'CREDIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(5,3,'4',150,'DEBIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(6,1,'5',180,'CREDIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(7,3,'6',170,'DEBIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(8,1,'7',150,'DEBIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(9,2,'8',120,'CREDIT','debit fooo',sysdate);
+                insert into account_operation (id,account_id,transaction_id,amount,type,description,created_date) values(10,4,'9',140,'DEBIT','debit fooo',sysdate);
+          stripComments: true
+#  - changeSet:
+#      id: 2
+#      author: fatih.ercik
+#      changes:
+#        - insert: 
+#            tableName: user
+#            columns:
+#              - column:
+#                  name: name
+#                  value: fatih
+#              - column:
+#                  name: created_date
+#                  value: fatih
+##
+#  - changeSet:
+#      id: 3
+#      author: nvoxland
+#      changes:
+#        - addLookupTable:
+#            existingTableName: person
+#            existingColumnName: state
+#            newTableName: state
+#            newColumnName: id
+#            newColumnDataType: char(2)

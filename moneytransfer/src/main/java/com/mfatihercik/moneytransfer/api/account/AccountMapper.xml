@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mfatihercik.moneytransfer.api.account.AccountMapper">
+
+	<resultMap type="com.mfatihercik.moneytransfer.domain.AccountOperation"
+		autoMapping="true" id="AccountOperation">
+	</resultMap>
+	<resultMap type="com.mfatihercik.moneytransfer.domain.Account"
+		autoMapping="true" id="AccountList">
+	</resultMap>
+	<resultMap type="com.mfatihercik.moneytransfer.domain.Account"
+		autoMapping="true" id="AccountDetail">
+		<association property="owner" select="accountOwner"
+			column="owner" />
+
+
+	</resultMap>
+
+	<insert id="insert" useGeneratedKeys="true" keyColumn="account_id" keyProperty="accountId">
+		insert into account
+		(balance,owner,currency,status,created_date) values
+		(#{balance},#{owner.id},#{currency},#{status},sysdate)
+	</insert>
+
+	<select id="isAccountExist" resultType="int">
+		select count(account_id) from account a where a.account_id=#{id}
+	</select>
+	
+	
+	<select id="get" resultType="com.mfatihercik.moneytransfer.domain.Account"
+		resultMap="AccountDetail">
+		select * from account a where a.account_id=#{id}
+	</select>
+	<select id="findAll" resultMap="AccountList" resultType="list">
+		select a.* from account a
+		<where>
+
+			<if test="list!=null and not list.isEmpty()">
+				a.status in
+				<foreach collection="list" item="item" separator="," open="("
+					close=")">
+					#{item}
+				</foreach>
+			</if>
+		</where>
+		
+	</select>
+	<select id="getUserAccount" resultMap="AccountList" resultType="list">
+		select a.* from account a
+		<where>
+			a.owner=#{ownerId}
+		</where>
+		
+	</select>
+	<select id="accountOwner" resultType="com.mfatihercik.moneytransfer.domain.User">
+		select * from user where id=#{owner}
+
+	</select>
+	<select id="getAccountOperations" resultType="list" resultMap="AccountOperation">
+		select * from account_opertion where account=#{owner}
+
+	</select>
+	<update id="update" useGeneratedKeys="true" >
+		update account
+		<set>		
+		<if test="status!=null">
+			status=#{status},
+		</if>		
+		<if test="balance!=null">
+			balance=#{balance},
+		</if>
+		</set> 
+		 where account_id=#{accountId}
+	</update>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mfatihercik.moneytransfer.api.user.UserMapper">
+
+	<resultMap type="com.mfatihercik.moneytransfer.domain.User" id="User" autoMapping="true"></resultMap>
+
+
+	<insert id="insert" useGeneratedKeys="true" keyColumn="id"
+		keyProperty="id">
+		insert into user (name ,created_date) values
+		(#{name},sysdate)
+	</insert>
+	<update id="update" useGeneratedKeys="true" >
+		update user set name=#{name},modified_date=sysdate where id=#{id}
+	</update>
+
+	<select id="get" resultType="com.mfatihercik.moneytransfer.domain.User">
+		select * from user a where a.id=#{id}
+	</select>
+	<select id="findAll" resultMap="User" resultType="list">
+		select * from user
+	</select>
+
+
+</mapper>
